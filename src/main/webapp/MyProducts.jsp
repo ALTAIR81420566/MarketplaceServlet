@@ -59,21 +59,12 @@
                 <option>Example</option>
             </select>
         </div>
-        <div class="col-6 col-md-7">
-            <c:if test="${login != guest}">
-              <div class="row">
-                <div class="col-5 col-md-3 ">
-                          <button id = "addBtn">Add my product</button>
-                </div>
-                <div class="col-5 col-md-3 ">
-                          <button id = "myProd">My products</button>
-                 </div>
-              </div>
-            </c:if>
+        <div class="col-6 col-md-2">
+                <button id = "backBtn">Back on general page</button>
         </div>
     </div>
 
-    <form method="post" action="/general">
+    <form method="post" action="/myProducts">
                 <div class="table-responsive">
                 <table class="table ">
                     <tr>
@@ -86,7 +77,7 @@
                         <th width="200">Stop Date</th>
                         <th width="100">Best offer</th>
                         <th width="100">Bidder ID</th>
-                        <th width="200">Action</th>
+                        <th width="200">Bidding</th>
                         <th></th>
                     </tr>
 
@@ -125,12 +116,14 @@
                                 <td><button id="buyNowBtn" >Buy now</button></td>
                             </c:if>
                             <c:if test="${!item.key.buyNow}">
-                            <form  method="post" action="/general">
                                 <td>
-                                    <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
-                                    <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
+                                <form method="post" action="/myProducts">
+                                    <button id="delBtn" type ="submit" name="productId" value="${item.key.uID}">Delete</button>
+                                </form>
+                                <form method="post" action="/myProducts">
+                                    <button id="editBtn" type ="submit" name="productId" value="${item.key.uID}">Edit</button>
+                                </form>
                                 </td>
-                             </form>
                             </c:if>
                         </tr>
                     </c:forEach>

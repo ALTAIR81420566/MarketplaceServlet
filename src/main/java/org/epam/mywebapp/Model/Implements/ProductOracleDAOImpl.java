@@ -15,7 +15,10 @@ public class ProductOracleDAOImpl implements ProductDAO {
     private static final String SELECT_BY_UID = "SELECT * FROM PRODUCTS WHERE PRODUCT_ID = ?";;
     private static final String SELECT_BY_SELLER = "SELECT * FROM PRODUCTS INNER JOIN USERS on PRODUCTS.SELLER_ID = USERS.USER_ID WHERE " +
             "USERS.NAME = ?";
+    private static final String SELECT_BY_SELLER_LOGIN = "SELECT * FROM PRODUCTS INNER JOIN USERS on PRODUCTS.SELLER_ID = USERS.USER_ID WHERE " +
+            "USERS.LOGIN = ?";
     private static final String SOLD_PRODUCT_QUERY = "UPDATE PRODUCTS SET IS_SOLD = ? WHERE PRODUCT_ID = ?";
+    private static final String DELETE_PRODUCT_QUERY = "DELETE  FROM PRODUCTS WHERE PRODUCT_ID = ?";
     private final String INSERT_PRODUCT_QUERY = "INSERT INTO Products (PRODUCT_ID, TITLE, DESCRIPTION, START_PRICE, START_BIDDING_DATE, " +
             "TIME, BID_STEP, IS_BUY_NOW, SELLER_ID, IS_SOLD) VALUES (?,?,?,?,?,?,?,?,?,?)";
     private String EXEPTION_SQL = "The exception is caused by an error in the SQL query";
@@ -142,6 +145,33 @@ public class ProductOracleDAOImpl implements ProductDAO {
     }
 
     @Override
+    public ArrayList<Product> findBySellerLogin(String login){
+        Connection conn = MyConnection.getConnection();
+        PreparedStatement statement = null;
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(SELECT_BY_SELLER_LOGIN);
+            statement.setString(1, login);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                products.add(createProduct(resultSet));
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, EXEPTION_SQL, e);
+        }finally {
+            try {
+                statement.close();
+                conn.close();
+            } catch (SQLException e) {
+                log.log(Level.SEVERE, EXEPTION_CLOSE_CONN, e);
+            }
+
+        }
+
+        return products;
+    }
+
+    @Override
     public void add(Product product) {
         Connection connection = MyConnection.getConnection();
         PreparedStatement statement = null;
@@ -177,7 +207,7 @@ public class ProductOracleDAOImpl implements ProductDAO {
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(SOLD_PRODUCT_QUERY);
-            statement.setInt(1,1); // TODO Here we can use NUMBER(1,0) instead of VARCHAR2
+            statement.setInt(1,1);
             statement.setLong(2,product.getuID());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -190,5 +220,26 @@ public class ProductOracleDAOImpl implements ProductDAO {
                 log.log(Level.SEVERE, EXEPTION_CLOSE_CONN, e);
             }
         }
+    }
+
+    @Override
+    public void delete(Long productId) {
+        Connection connection = MyConnection.getConnection();
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(SOLD_PRODUCT_QUERY);
+            statement.setLong(1,productId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, EXEPTION_SQL, e);
+        }finally {
+            try {
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                log.log(Level.SEVERE, EXEPTION_CLOSE_CONN, e);
+            }
+        }
+
     }
 }

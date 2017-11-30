@@ -2,8 +2,8 @@ org\epam\mywebapp\Model\Implements\ProductOracleDAOImpl.class
 org\epam\mywebapp\Run.class
 org\epam\mywebapp\Controller\Servlet\GeneralPageServlet.class
 org\epam\mywebapp\Controller\MyConnection.class
+org\epam\mywebapp\Controller\Servlet\MyProductsServlet.class
 org\epam\mywebapp\Model\Interfaces\BidDAO.class
-org\epam\mywebapp\Controller\Servlet\BidServlet.class
 org\epam\mywebapp\Exeptions\UserAuthenticationException.class
 org\epam\mywebapp\Controller\Servlet\RegistrationServlet.class
 org\epam\mywebapp\Model\Implements\User.class

@@ -36,7 +36,6 @@ public class AddingServlet  extends HttpServlet {
 
         JSONObject obj = new JSONObject();
 
-
         try {
             String login = request.getSession().getAttribute("login").toString();
 
@@ -61,7 +60,16 @@ public class AddingServlet  extends HttpServlet {
             writer.print(obj);
             writer.close();
         }
+    }
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/Adding.jsp").forward(request, response);
+    }
+    private void add(){
+
+    }
+    private void edit(){
 
     }
 }

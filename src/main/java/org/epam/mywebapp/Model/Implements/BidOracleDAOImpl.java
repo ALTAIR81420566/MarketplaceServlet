@@ -60,8 +60,8 @@ public class BidOracleDAOImpl implements BidDAO {
         try {
             statement = connection.prepareStatement(INSERT_QUERY);
             statement.setObject(1, bid.getId());
-            statement.setLong(2,bid.getProductId());
-            statement.setLong(3,bid.getUserId());
+            statement.setLong(2,bid.getUserId());
+            statement.setLong(3,bid.getProductId());
             statement.setDouble(4,bid.getCount());
             statement.executeUpdate();
 

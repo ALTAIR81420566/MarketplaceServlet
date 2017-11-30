@@ -63,12 +63,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>Bid</servlet-name>
-        <servlet-class>org.epam.mywebapp.Controller.Servlet.BidServlet</servlet-class>
+        <servlet-name>MyProducts</servlet-name>
+        <servlet-class>org.epam.mywebapp.Controller.Servlet.MyProductsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Bid</servlet-name>
-        <url-pattern>/makeBid</url-pattern>
+        <servlet-name>MyProducts</servlet-name>
+        <url-pattern>/myProducts</url-pattern>
     </servlet-mapping>
 
 

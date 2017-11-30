@@ -1,6 +1,5 @@
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Model\Implements\Product.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Run.java
-C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Controller\Servlet\BidServlet.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Model\Interfaces\ProductDAO.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Controller\Servlet\AddingServlet.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Model\Implements\User.java
@@ -16,3 +15,4 @@ C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Mo
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Model\Implements\BidOracleDAOImpl.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Controller\MyConnection.java
 C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Controller\Servlet\AuthorizationServlet.java
+C:\Users\Ilia_Khirnyi\IdeaProjects\My web app\src\main\java\org\epam\mywebapp\Controller\Servlet\MyProductsServlet.java

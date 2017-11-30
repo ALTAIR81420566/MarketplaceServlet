@@ -1,12 +1,11 @@
 package org.epam.mywebapp.Controller.Servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.epam.mywebapp.Model.Implements.Bid;
-import org.epam.mywebapp.Model.Implements.BidOracleDAOImpl;
-import org.epam.mywebapp.Model.Implements.Product;
-import org.epam.mywebapp.Model.Implements.ProductOracleDAOImpl;
+import org.epam.mywebapp.Exeptions.UserAuthenticationException;
+import org.epam.mywebapp.Model.Implements.*;
 import org.epam.mywebapp.Model.Interfaces.BidDAO;
 import org.epam.mywebapp.Model.Interfaces.ProductDAO;
+import org.epam.mywebapp.Model.Interfaces.UserDAO;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -47,7 +46,33 @@ public class GeneralPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/General.jsp").forward(request, response);
+        String login = request.getSession().getAttribute("login").toString();
+        Long productId = Long.parseLong(request.getParameter("productId"));
+        Integer count = Integer.parseInt(request.getParameter("count"));
+
+
+        UserDAO userDAO = new UserOracleDAOImpl();
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        try {
+            User user = userDAO.findByLogin(login);
+            BidDAO bidDAO = new BidOracleDAOImpl();
+            Product product = productDAO.findByUID(productId);
+            if(count > product.getStep()) {
+                Bid bid = new Bid();
+                bid.setUserId(user.getId());
+                bid.setProductId(productId);
+                bid.setCount(count);
+                bidDAO.add(bid);
+            }else{
+                log.log(Level.SEVERE, "Bid's count is less than a step");
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQL exception", e);
+        } catch (UserAuthenticationException e) {
+            log.log(Level.SEVERE, "User not exist", e);
+        }
+
+        doGet(request, response);
     }
 
 
