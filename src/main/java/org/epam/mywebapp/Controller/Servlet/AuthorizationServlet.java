@@ -51,5 +51,8 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("Authorization.jsp").forward(request, response);
+        request.getSession().setAttribute("login", "guest");
+        request.getSession().setAttribute("role", "guest");
+
     }
 }

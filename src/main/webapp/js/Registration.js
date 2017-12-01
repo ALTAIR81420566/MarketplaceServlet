@@ -86,6 +86,8 @@ $(document).ready(function(){
                'regCallback': function(user) {
                         if(user == null){
                             $('.errorText').text('User with this login already exist');
+                        }else{
+                            window.location.href='/authorization';
                         }
                }
 

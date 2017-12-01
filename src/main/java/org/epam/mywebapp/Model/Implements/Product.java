@@ -13,7 +13,7 @@ public class Product {
     private double step;
     private boolean buyNow;
     private long sellerID;
-    private boolean isSold;
+    private boolean sold;
 
     public long getStopDate() {
         return stopDate;
@@ -44,11 +44,11 @@ public class Product {
     }
 
     public boolean isSold() {
-        return isSold;
+        return sold;
     }
 
     public void setSold(boolean sold) {
-        isSold = sold;
+        this.sold = sold;
     }
 
     public long getSellerID() {

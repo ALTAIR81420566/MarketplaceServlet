@@ -46,34 +46,40 @@ public class GeneralPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String login = request.getSession().getAttribute("login").toString();
-        Long productId = Long.parseLong(request.getParameter("productId"));
-        Integer count = Integer.parseInt(request.getParameter("count"));
 
+            String login = request.getSession().getAttribute("login").toString();
+            Long productId = Long.parseLong(request.getParameter("productId"));
 
-        UserDAO userDAO = new UserOracleDAOImpl();
-        ProductDAO productDAO = new ProductOracleDAOImpl();
+            UserDAO userDAO = new UserOracleDAOImpl();
+            ProductDAO productDAO = new ProductOracleDAOImpl();
         try {
-            User user = userDAO.findByLogin(login);
-            BidDAO bidDAO = new BidOracleDAOImpl();
-            Product product = productDAO.findByUID(productId);
-            if(count > product.getStep()) {
-                Bid bid = new Bid();
-                bid.setUserId(user.getId());
-                bid.setProductId(productId);
-                bid.setCount(count);
-                bidDAO.add(bid);
+            if (request.getParameter("buy").equals("true")) {
+                Product product = productDAO.findByUID(productId);
+                productDAO.sellProduct(product);
             }else{
-                log.log(Level.SEVERE, "Bid's count is less than a step");
+                    Integer count = Integer.parseInt(request.getParameter("count"));
+                    User user = userDAO.findByLogin(login);
+                    BidDAO bidDAO = new BidOracleDAOImpl();
+                    Product product = productDAO.findByUID(productId);
+                    if (count > product.getStep()) {
+                        Bid bid = new Bid();
+                        bid.setUserId(user.getId());
+                        bid.setProductId(productId);
+                        bid.setCount(count);
+                        bidDAO.add(bid);
+                    } else {
+                        log.log(Level.SEVERE, "Bid's count is less than a step");
+                    }
+                }
+            } catch (SQLException e) {
+                log.log(Level.SEVERE, "SQL exception", e);
+            } catch (UserAuthenticationException e) {
+                log.log(Level.SEVERE, "User not exist", e);
             }
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-        } catch (UserAuthenticationException e) {
-            log.log(Level.SEVERE, "User not exist", e);
+
+            doGet(request, response);
         }
 
-        doGet(request, response);
-    }
 
 
 }

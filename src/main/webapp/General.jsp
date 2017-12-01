@@ -34,7 +34,10 @@
             <p>You are logged in as: </p>
         </div>
         <div class="col-2 col-md-1 ">
-            <p id="userLogin"></p>
+            <p id="userLogin">${login}</p>
+        </div>
+        <div class="col-2 col-md-1 ">
+            <a id="LogOut"  onclick="window.location.href='/authorization';">LogOut</a>
         </div>
     </div>
 </div>
@@ -60,7 +63,7 @@
             </select>
         </div>
         <div class="col-6 col-md-7">
-            <c:if test="${login != guest}">
+            <c:if test="${!role.equals('guest')}">
               <div class="row">
                 <div class="col-5 col-md-3 ">
                           <button id = "addBtn">Add my product</button>
@@ -92,7 +95,10 @@
 
                     <c:forEach items="${products}" var="item">
                         <tr>
-                            <td>${item.key.uID}</td>
+                            <td>
+
+                            ${item.key.uID}
+                            </td>
                             <td>${item.key.title}</td>
                             <td>${item.key.description}</td>
                             <td>${item.key.sellerID}</td>
@@ -121,17 +127,29 @@
                                 <td> ${item.value.count}</td>
                                 <td> ${item.value.userId}</td>
                             </c:if>
-                            <c:if test="${item.key.buyNow}">
-                                <td><button id="buyNowBtn" >Buy now</button></td>
+                            <c:if test="${item.key.sold}">
+                                 <td>SOLD</td>
                             </c:if>
-                            <c:if test="${!item.key.buyNow}">
-                            <form  method="post" action="/general">
-                                <td>
-                                    <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
-                                    <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
-                                </td>
-                             </form>
+                            <c:if test="${!item.key.sold}">
+                                <c:if test="${!role.equals('guest')}">
+                                      <c:if test="${item.key.buyNow}">
+                                      <form  method="post" action="/general">
+                                         <input maxlength="10" type="hidden" name="productId" value="${item.key.uID}">
+                                         <td><button id="buyNowBtn" type ="submit" name="buy" value="true">Buy now</button></td>
+                                       </form>
+                                      </c:if>
+
+                                      <c:if test="${!item.key.buyNow}">
+                                          <form  method="post" action="/general">
+                                                <td>
+                                                  <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
+                                                  <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
+                                                </td>
+                                          </form>
+                                       </c:if>
+                                </c:if>
                             </c:if>
+
                         </tr>
                     </c:forEach>
                 </table>

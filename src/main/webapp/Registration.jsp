@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+  pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +31,7 @@
         </div>
         <div class="col-6 col-md-3">
             <p><input maxlength="25" size="35" id="fullName"></p>
-            <p><input maxlength="25" size="35" id="address"></p>
+            <p><input maxlength="45" size="35" id="address"></p>
         </div>
     </div>
     <div class="row justify-content-md-center">
@@ -37,7 +40,7 @@
             <p>Password: </p>
         </div>
         <div class="col-6 col-md-3">
-            <p><input maxlength="25" size="35" id="login"></p>
+            <p><input maxlength="20" size="35" id="login"></p>
             <p><input maxlength="25" size="35" id="password" type="password"></p>
         </div>
     </div>
@@ -45,7 +48,8 @@
     <div class="row justify-content-md-center">
         <div class="col-2 col-md-2 auhtorozationText">
             <p>Re-enter password: </p>
-            <button type="submit" class="btn btn-success" id="register" >Register</button>
+            <button type="submit" class="btn btn-success registerBtn" id="register" >Register</button>
+            <button type="submit" class="btn btn-primary registerBtn" id="back"  onclick="window.location.href='/authorization';">Back</button>
         </div>
         <div class="col-6 col-md-3">
             <p><input maxlength="25" size="35" id="rePassword" type="password"></p>

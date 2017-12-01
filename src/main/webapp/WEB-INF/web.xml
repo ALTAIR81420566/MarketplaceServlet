@@ -45,15 +45,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>Authentication</servlet-name>
-        <servlet-class>org.epam.mywebapp.Controller.Servlet.AuthenticationServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Authentication</servlet-name>
-        <url-pattern>/authentication</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>Authorization</servlet-name>
         <servlet-class>org.epam.mywebapp.Controller.Servlet.AuthorizationServlet</servlet-class>
     </servlet>

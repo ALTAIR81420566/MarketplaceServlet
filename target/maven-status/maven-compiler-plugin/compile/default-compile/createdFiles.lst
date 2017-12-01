@@ -13,6 +13,5 @@ org\epam\mywebapp\Model\Implements\UserOracleDAOImpl.class
 org\epam\mywebapp\Controller\Servlet\AddingServlet.class
 org\epam\mywebapp\Model\Implements\Bid.class
 org\epam\mywebapp\Model\Interfaces\UserDAO.class
-org\epam\mywebapp\Controller\Servlet\AuthenticationServlet.class
 org\epam\mywebapp\Model\Implements\Product.class
 org\epam\mywebapp\Model\Implements\BidOracleDAOImpl.class

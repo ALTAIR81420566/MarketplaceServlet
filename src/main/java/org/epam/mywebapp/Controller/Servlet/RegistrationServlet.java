@@ -46,4 +46,9 @@ public class RegistrationServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
         writer.print(respUser);
     }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/Registration.jsp").forward(request, response);
+    }
 }

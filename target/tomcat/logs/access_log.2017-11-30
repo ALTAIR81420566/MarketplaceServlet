@@ -1,7 +1,0 @@
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:45 +0400] "GET / HTTP/1.1" 200 1985 http-bio-8888-exec-1 444
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:45 +0400] "GET /js/Authorization.js HTTP/1.1" 304 - http-bio-8888-exec-2 3
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:48 +0400] "POST /authorization HTTP/1.1" 200 18 http-bio-8888-exec-3 191
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:48 +0400] "GET /general HTTP/1.1" 200 7176 http-bio-8888-exec-4 365
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:48 +0400] "GET /js/GeneralPage.js HTTP/1.1" 200 500 http-bio-8888-exec-5 0
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:49 +0400] "GET /add HTTP/1.1" 200 2563 http-bio-8888-exec-6 53
-0:0:0:0:0:0:0:1 - - [30/Nov/2017:16:13:49 +0400] "GET /js/EditAdding.js HTTP/1.1" 304 - http-bio-8888-exec-7 2
