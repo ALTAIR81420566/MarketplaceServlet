@@ -17,10 +17,13 @@ public class ProductOracleDAOImpl implements ProductDAO {
             "USERS.NAME = ?";
     private static final String SELECT_BY_SELLER_LOGIN = "SELECT * FROM PRODUCTS INNER JOIN USERS on PRODUCTS.SELLER_ID = USERS.USER_ID WHERE " +
             "USERS.LOGIN = ?";
+    private static final String SELECT_BY_DESCRIPTION = "SELECT * FROM PRODUCTS WHERE DESCRIPTION LIKE ? ";
     private static final String SOLD_PRODUCT_QUERY = "UPDATE PRODUCTS SET IS_SOLD = ? WHERE PRODUCT_ID = ?";
     private static final String DELETE_PRODUCT_QUERY = "DELETE  FROM PRODUCTS WHERE PRODUCT_ID = ?";
     private final String INSERT_PRODUCT_QUERY = "INSERT INTO Products (PRODUCT_ID, TITLE, DESCRIPTION, START_PRICE, START_BIDDING_DATE, " +
             "TIME, BID_STEP, IS_BUY_NOW, SELLER_ID, IS_SOLD) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    private final String UPDATE_PRODUCT_QUERY = "UPDATE  Products SET PRODUCT_ID = ?, TITLE = ?, DESCRIPTION = ?, START_PRICE = ?, START_BIDDING_DATE = ?, " +
+            "TIME = ?, BID_STEP = ?, IS_BUY_NOW = ?, SELLER_ID = ?, IS_SOLD = ? WHERE PRODUCT_ID = ?";
     private String EXEPTION_SQL = "The exception is caused by an error in the SQL query";
     private String EXEPTION_CLOSE_CONN = "The exception is caused by an error in close connection";
     private static Logger log = Logger.getLogger(ProductOracleDAOImpl.class.getName());
@@ -172,6 +175,33 @@ public class ProductOracleDAOImpl implements ProductDAO {
     }
 
     @Override
+    public ArrayList<Product> findByDescription(String description){
+        Connection conn = MyConnection.getConnection();
+        PreparedStatement statement = null;
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            statement = conn.prepareStatement(SELECT_BY_DESCRIPTION);
+            statement.setString(1, description);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                products.add(createProduct(resultSet));
+            }
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, EXEPTION_SQL, e);
+        }finally {
+            try {
+                statement.close();
+                conn.close();
+            } catch (SQLException e) {
+                log.log(Level.SEVERE, EXEPTION_CLOSE_CONN, e);
+            }
+
+        }
+
+        return products;
+    }
+
+    @Override
     public void add(Product product) {
         Connection connection = MyConnection.getConnection();
         PreparedStatement statement = null;
@@ -227,7 +257,7 @@ public class ProductOracleDAOImpl implements ProductDAO {
         Connection connection = MyConnection.getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(SOLD_PRODUCT_QUERY);
+            statement = connection.prepareStatement(DELETE_PRODUCT_QUERY);
             statement.setLong(1,productId);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -241,5 +271,36 @@ public class ProductOracleDAOImpl implements ProductDAO {
             }
         }
 
+    }
+
+    @Override
+    public void update(Product product) {
+        Connection connection = MyConnection.getConnection();
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(UPDATE_PRODUCT_QUERY);
+            statement.setObject(1,product.getuID());
+            statement.setString(2,product.getTitle());
+            statement.setString(3,product.getDescription());
+            statement.setDouble(4,product.getStartPrice());
+            statement.setLong(5,  product.getStartBiddingDate());
+            statement.setLong(6,  product.getTimeMillis());
+            statement.setDouble(7, product.getStep());
+            statement.setInt(8,  product.isBuyNow() == true ? 1 : 0 );
+            statement.setLong(9, product.getSellerID());
+            statement.setInt(10,  product.isSold()  == true ? 1 : 0 );
+            statement.setObject(11,product.getuID());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, EXEPTION_SQL, e);
+        }finally {
+            try {
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                log.log(Level.SEVERE, EXEPTION_CLOSE_CONN, e);
+            }
+        }
     }
 }

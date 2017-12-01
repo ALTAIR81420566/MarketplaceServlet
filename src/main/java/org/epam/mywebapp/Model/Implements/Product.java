@@ -131,4 +131,5 @@ public class Product {
         time = aLong / 1000 /60 / 60;
         this.stopDate = aLong + startBiddingDate;
     }
+
 }

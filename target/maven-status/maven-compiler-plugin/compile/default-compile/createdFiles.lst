@@ -1,5 +1,6 @@
 org\epam\mywebapp\Model\Implements\ProductOracleDAOImpl.class
 org\epam\mywebapp\Run.class
+org\epam\mywebapp\Controller\Servlet\AddingServlet$Actions.class
 org\epam\mywebapp\Controller\Servlet\GeneralPageServlet.class
 org\epam\mywebapp\Controller\MyConnection.class
 org\epam\mywebapp\Controller\Servlet\MyProductsServlet.class

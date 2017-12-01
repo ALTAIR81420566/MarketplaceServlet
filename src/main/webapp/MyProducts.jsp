@@ -77,7 +77,7 @@
                         <th width="200">Stop Date</th>
                         <th width="100">Best offer</th>
                         <th width="100">Bidder ID</th>
-                        <th width="200">Bidding</th>
+                        <th width="300">Action</th>
                         <th></th>
                     </tr>
 
@@ -95,7 +95,7 @@
                                         <jsp:useBean id="dateValue" class="java.util.Date"/>
                                         <jsp:setProperty name="dateValue" property="time"
                                                          value="${item.key.stopDate}"/>
-                                        <fmt:formatDate value="${dateValue}" pattern="MM/dd/yyyy HH:mm"/>
+                                        <fmt:formatDate value="${dateValue}" pattern="dd/MM/yyyy HH:mm"/>
 
                                     </td>
                                 </c:when>
@@ -112,18 +112,27 @@
                                 <td> ${item.value.count}</td>
                                 <td> ${item.value.userId}</td>
                             </c:if>
-                            <c:if test="${item.key.buyNow}">
-                                <td><button id="buyNowBtn" >Buy now</button></td>
+                            <c:if test="${item.key.sold}">
+                                 <td>SOLD</td>
                             </c:if>
-                            <c:if test="${!item.key.buyNow}">
+                            <c:if test="${!item.key.sold}">
+                                <jsp:useBean id="now" class="java.util.Date"/>
+                                <c:if test="${dateValue.getTime() > now.getTime()}">
                                 <td>
-                                <form method="post" action="/myProducts">
-                                    <button id="delBtn" type ="submit" name="productId" value="${item.key.uID}">Delete</button>
+                                 <div class="col-2 col-md-2 ">
+                                    <button id="delBtn" type ="submit" name="productId" value="${item.key.uID}" class="btnDelAdd">Delete</button>
                                 </form>
-                                <form method="post" action="/myProducts">
-                                    <button id="editBtn" type ="submit" name="productId" value="${item.key.uID}">Edit</button>
+
+                                <form method="get" action="/add">
+                                    <input type="hidden" name="action" value="edit">
+                                    <button id="editBtn" type ="submit" name="productId" value="${item.key.uID}" class="btnDelAdd">Edit</button>
                                 </form>
+
                                 </td>
+                                </c:if>
+                                <c:if test="${dateValue.getTime() < now.getTime()}">
+                                    <td>Time is over</td>
+                                </c:if>
                             </c:if>
                         </tr>
                     </c:forEach>

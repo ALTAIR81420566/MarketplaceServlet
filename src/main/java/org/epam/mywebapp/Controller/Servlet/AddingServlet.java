@@ -21,9 +21,31 @@ import java.util.logging.Logger;
 
 public class AddingServlet  extends HttpServlet {
     private static Logger log = Logger.getLogger(AddingServlet.class.getName());
+    private enum Actions {ADD, EDIT};
+    private Actions currentAction;
+    private Long productId;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(currentAction.equals(Actions.EDIT)){
+            edit(request,response);
+        }else{
+            add(request,response);
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if(request.getParameter("action").equals("edit")){
+            currentAction = Actions.EDIT;
+            productId = Long.parseLong(request.getParameter("productId"));
+        }else{
+            currentAction = Actions.ADD;
+        }
+        request.getRequestDispatcher("/Adding.jsp").forward(request, response);
+    }
+
+    private void add(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String startPrice = request.getParameter("startPrice");
@@ -61,15 +83,43 @@ public class AddingServlet  extends HttpServlet {
             writer.close();
         }
     }
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String startPrice = request.getParameter("startPrice");
+        int timeLeft = Integer.parseInt(request.getParameter("timeLeft"));
+        boolean buyItNow = Boolean.parseBoolean(request.getParameter("buyItNow"));
+        String step = request.getParameter("step");
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/Adding.jsp").forward(request, response);
-    }
-    private void add(){
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        UserDAO userDAO = new UserOracleDAOImpl();
 
-    }
-    private void edit(){
+        JSONObject obj = new JSONObject();
 
+        try {
+            String login = request.getSession().getAttribute("login").toString();
+
+            User user = userDAO.findByLogin(login);
+            Product product = new Product(title,description,Double.parseDouble(startPrice),Double.parseDouble(step));
+            product.setSellerID(user.getId());
+            product.setBuyNow(buyItNow);
+            product.setTime(timeLeft);
+            product.setuID(productId);
+            productDAO.update(product);
+            obj.put("resp", "success");
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQL exception", e);
+            obj.put("resp", "SQL error");
+        } catch (UserAuthenticationException | NullPointerException e) {
+            log.log(Level.SEVERE, "User not exist", e);
+            obj.put("resp", "Authentication error");
+        }finally {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=UTF-8");
+            PrintWriter writer = response.getWriter();
+
+            writer.print(obj);
+            writer.close();
+        }
     }
 }

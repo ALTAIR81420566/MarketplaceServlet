@@ -49,31 +49,36 @@
     <p>Keyword: </p>
 
     <div class="row justify-content-md-center">
-
+        <form method="get" action="/general">
         <div class="col-2 col-md-3 ">
-            <p><input maxlength="25" size="35"></p>
+            <p><input maxlength="25" size="35" name="searchText" value="${fn:escapeXml(general.searchText)}"></p>
         </div>
         <div class="col-6 col-md-1">
-            <select>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
+            <select name="findBy" value="${fn:escapeXml(general.findBy)}">
+                <option>Title</option>
+                <option>uId</option>
+                <option>Description</option>
             </select>
         </div>
         <div class="col-6 col-md-7">
             <c:if test="${!role.equals('guest')}">
               <div class="row">
+              <div class="col-2 col-md-2 ">
+                  <button id = "searchBtn" type="submit">Search</button>
+              </div>
                 <div class="col-5 col-md-3 ">
-                          <button id = "addBtn">Add my product</button>
+                     <form method="get" action="/add">
+                         <button id="addBtn" type="submit" name="action" value="add">Add my product</button>
+                     </form>
                 </div>
+
                 <div class="col-5 col-md-3 ">
                           <button id = "myProd">My products</button>
                  </div>
               </div>
             </c:if>
         </div>
+        </form>
     </div>
 
     <form method="post" action="/general">
@@ -110,7 +115,7 @@
                                         <jsp:useBean id="dateValue" class="java.util.Date"/>
                                         <jsp:setProperty name="dateValue" property="time"
                                                          value="${item.key.stopDate}"/>
-                                        <fmt:formatDate value="${dateValue}" pattern="MM/dd/yyyy HH:mm"/>
+                                        <fmt:formatDate value="${dateValue}" pattern="dd/MM/yyyy HH:mm"/>
 
                                     </td>
                                 </c:when>
@@ -131,23 +136,29 @@
                                  <td>SOLD</td>
                             </c:if>
                             <c:if test="${!item.key.sold}">
-                                <c:if test="${!role.equals('guest')}">
-                                      <c:if test="${item.key.buyNow}">
-                                      <form  method="post" action="/general">
-                                         <input maxlength="10" type="hidden" name="productId" value="${item.key.uID}">
-                                         <td><button id="buyNowBtn" type ="submit" name="buy" value="true">Buy now</button></td>
-                                       </form>
-                                      </c:if>
-
-                                      <c:if test="${!item.key.buyNow}">
+                            <jsp:useBean id="now" class="java.util.Date"/>
+                            <c:if test="${dateValue.getTime() > now.getTime()}">
+                                    <c:if test="${!role.equals('guest')}">
+                                          <c:if test="${item.key.buyNow}">
                                           <form  method="post" action="/general">
-                                                <td>
-                                                  <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
-                                                  <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
-                                                </td>
-                                          </form>
-                                       </c:if>
-                                </c:if>
+                                             <input maxlength="10" type="hidden" name="productId" value="${item.key.uID}">
+                                             <td><button id="buyNowBtn" type ="submit" name="buy" value="true">Buy now</button></td>
+                                           </form>
+                                          </c:if>
+
+                                          <c:if test="${!item.key.buyNow}">
+                                              <form  method="post" action="/general">
+                                                    <td>
+                                                      <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
+                                                      <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
+                                                    </td>
+                                              </form>
+                                           </c:if>
+                                    </c:if>
+                            </c:if>
+                            <c:if test="${dateValue.getTime() < now.getTime()}">
+                                <td>Time is over</td>
+                            </c:if>
                             </c:if>
 
                         </tr>

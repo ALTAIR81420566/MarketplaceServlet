@@ -38,5 +38,6 @@ public class MyProductsServlet extends HttpServlet {
         Long productId = Long.parseLong(request.getParameter("productId"));
         ProductDAO productDAO = new ProductOracleDAOImpl();
         productDAO.delete(productId);
+        doGet(request,response);
     }
 }

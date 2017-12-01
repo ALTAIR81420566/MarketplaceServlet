@@ -15,9 +15,12 @@ public interface ProductDAO {
 
  ArrayList<Product> findBySellerLogin(String sellerName);
 
+ ArrayList<Product> findByDescription(String login);
+
  void add(Product product);
  void sellProduct(Product product);
 
 
  void delete(Long productId);
+    void update(Product product);
 }

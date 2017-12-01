@@ -1,15 +1,12 @@
 package org.epam.mywebapp.Controller.Servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.epam.mywebapp.Exeptions.UserAuthenticationException;
 import org.epam.mywebapp.Model.Implements.*;
 import org.epam.mywebapp.Model.Interfaces.BidDAO;
 import org.epam.mywebapp.Model.Interfaces.ProductDAO;
 import org.epam.mywebapp.Model.Interfaces.UserDAO;
-import org.json.JSONObject;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,20 +24,14 @@ public class GeneralPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ProductDAO productDAO = new ProductOracleDAOImpl();
-        try {
-            ArrayList<Product> products = productDAO.getAll();
-            Map<Product, Bid> items = new HashMap<>();
-            BidDAO bidDAO = new BidOracleDAOImpl();
-            for(Product prod : products){
-                Bid bestBid = bidDAO.getLast(prod.getuID());
-                items.put(prod, bestBid);
-            }
 
-            request.setAttribute("products", items);
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
+        if(request.getParameter("findBy") == null){
+            findAll(request);
+        }else if(request.getParameter("findBy").equals("title")){
+            String title =  request.getParameter("searchText").toString();
+            findByTitle(request, title);
         }
+
         request.getRequestDispatcher("/General.jsp").forward(request, response);
     }
 
@@ -79,6 +70,45 @@ public class GeneralPageServlet extends HttpServlet {
 
             doGet(request, response);
         }
+
+    private void findByTitle(HttpServletRequest request, String title){
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        try {
+            ArrayList<Product> products = productDAO.findByTitle(title);
+            Map<Product, Bid> items = new HashMap<>();
+            BidDAO bidDAO = new BidOracleDAOImpl();
+            for(Product prod : products){
+                Bid bestBid = bidDAO.getLast(prod.getuID());
+                items.put(prod, bestBid);
+            }
+
+            request.setAttribute("products", items);
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQL exception", e);
+        }
+    }
+    private void findById(HttpServletRequest request){
+
+    }
+    private void findByDescription(HttpServletRequest request){
+
+    }
+    private void findAll(HttpServletRequest request){
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        try {
+            ArrayList<Product> products = productDAO.getAll();
+            Map<Product, Bid> items = new HashMap<>();
+            BidDAO bidDAO = new BidOracleDAOImpl();
+            for(Product prod : products){
+                Bid bestBid = bidDAO.getLast(prod.getuID());
+                items.put(prod, bestBid);
+            }
+
+            request.setAttribute("products", items);
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQL exception", e);
+        }
+    }
 
 
 
