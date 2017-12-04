@@ -17,11 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyProductsServlet extends HttpServlet {
+    private final String LOGIN = "login";
+    private final String PRODUCT_ID_PARAM = "productId";
+    private final String MYPROD_PATH = "/MyProducts.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductDAO productDAO = new ProductOracleDAOImpl();
-        String login = request.getSession().getAttribute("login").toString();
+        String login = request.getSession().getAttribute(LOGIN).toString();
         ArrayList<Product> products = productDAO.findBySellerLogin(login);
         Map<Product, Bid> items = new HashMap<>();
         BidDAO bidDAO = new BidOracleDAOImpl();
@@ -30,12 +33,12 @@ public class MyProductsServlet extends HttpServlet {
             items.put(prod, bestBid);
         }
         request.setAttribute("products", items);
-        request.getRequestDispatcher("/MyProducts.jsp").forward(request, response);
+        request.getRequestDispatcher(MYPROD_PATH).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = Long.parseLong(request.getParameter("productId"));
+        Long productId = Long.parseLong(request.getParameter(PRODUCT_ID_PARAM));
         ProductDAO productDAO = new ProductOracleDAOImpl();
         productDAO.delete(productId);
         doGet(request,response);

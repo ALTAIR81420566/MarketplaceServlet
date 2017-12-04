@@ -72,7 +72,7 @@ $(document).ready(function(){
                         var info = $('#timeLeftInfo');
                         var ele = $('#timeLeft');
                         if(!$("#buyItNowCheckBox").is(':checked')) {
-                          return  jVal.time(ele, info);
+                          return  jVal.number(ele, info);
                         }else{
                             return true;
                         }

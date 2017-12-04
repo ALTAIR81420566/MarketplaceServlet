@@ -24,10 +24,27 @@ public class AddingServlet  extends HttpServlet {
     private enum Actions {ADD, EDIT};
     private Actions currentAction;
     private Long productId;
+    private final String ACTION_PARAM = "action";
+    private final String STEP_PARAM = "step";
+    private final String EDIT_PARAM = "edit";
+    private final String TITLE_PARAM = "title";
+    private final String START_PRICE_PARAM = "startPrice";
+    private final String DESCRIPTION_PARAM = "description";
+    private final String BUY_IT_NOW_PARAM = "buyItNow";
+    private final String TIME_LEFT_PARAM = "timeLeft";
+    private final String PRODICT_ID_PARAM = "productId";
+    private final String ADDING_PATH = "/Adding.jsp";
+    private final String LOGIN_ATTR = "login";
+    private final String RESP_ATTR = "resp";
+    private final String SUCCES = "success";
+    private final String SQL_ERR = "SQL error";
+    private final String AUTH_ERR = "Authentication error";
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
         if(currentAction.equals(Actions.EDIT)){
             edit(request,response);
         }else{
@@ -37,22 +54,22 @@ public class AddingServlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(request.getParameter("action").equals("edit")){
+        if(request.getParameter(ACTION_PARAM).equals(EDIT_PARAM)){
             currentAction = Actions.EDIT;
-            productId = Long.parseLong(request.getParameter("productId"));
+            productId = Long.parseLong(request.getParameter(PRODICT_ID_PARAM));
         }else{
             currentAction = Actions.ADD;
         }
-        request.getRequestDispatcher("/Adding.jsp").forward(request, response);
+        request.getRequestDispatcher(ADDING_PATH).forward(request, response);
     }
 
     private void add(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String title = request.getParameter("title");
-        String description = request.getParameter("description");
-        String startPrice = request.getParameter("startPrice");
-        int timeLeft = Integer.parseInt(request.getParameter("timeLeft"));
-        boolean buyItNow = Boolean.parseBoolean(request.getParameter("buyItNow"));
-        String step = request.getParameter("step");
+        String title = request.getParameter(TITLE_PARAM);
+        String description = request.getParameter(DESCRIPTION_PARAM);
+        String startPrice = request.getParameter(START_PRICE_PARAM);
+        int timeLeft = Integer.parseInt(request.getParameter(TIME_LEFT_PARAM));
+        boolean buyItNow = Boolean.parseBoolean(request.getParameter(BUY_IT_NOW_PARAM));
+        String step = request.getParameter(STEP_PARAM);
 
         ProductDAO productDAO = new ProductOracleDAOImpl();
         UserDAO userDAO = new UserOracleDAOImpl();
@@ -60,7 +77,7 @@ public class AddingServlet  extends HttpServlet {
         JSONObject obj = new JSONObject();
 
         try {
-            String login = request.getSession().getAttribute("login").toString();
+            String login = request.getSession().getAttribute(LOGIN_ATTR).toString();
 
             User user = userDAO.findByLogin(login);
             Product product = new Product(title,description,Double.parseDouble(startPrice),Double.parseDouble(step));
@@ -68,16 +85,14 @@ public class AddingServlet  extends HttpServlet {
             product.setBuyNow(buyItNow);
             product.setTime(timeLeft);
             productDAO.add(product);
-            obj.put("resp", "success");
+            obj.put(RESP_ATTR, SUCCES);
         } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-            obj.put("resp", "SQL error");
+            log.log(Level.SEVERE, SQL_ERR, e);
+            obj.put(RESP_ATTR, SQL_ERR);
         } catch (UserAuthenticationException | NullPointerException e) {
-            log.log(Level.SEVERE, "User not exist", e);
-            obj.put("resp", "Authentication error");
+            log.log(Level.SEVERE, AUTH_ERR, e);
+            obj.put(RESP_ATTR, AUTH_ERR);
         }finally {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json; charset=UTF-8");
             PrintWriter writer = response.getWriter();
 
             writer.print(obj);
@@ -85,12 +100,12 @@ public class AddingServlet  extends HttpServlet {
         }
     }
     private void edit(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String title = request.getParameter("title");
-        String description = request.getParameter("description");
-        String startPrice = request.getParameter("startPrice");
-        int timeLeft = Integer.parseInt(request.getParameter("timeLeft"));
-        boolean buyItNow = Boolean.parseBoolean(request.getParameter("buyItNow"));
-        String step = request.getParameter("step");
+        String title = request.getParameter(TITLE_PARAM);
+        String description = request.getParameter(DESCRIPTION_PARAM);
+        String startPrice = request.getParameter(START_PRICE_PARAM);
+        int timeLeft = Integer.parseInt(request.getParameter(TIME_LEFT_PARAM));
+        boolean buyItNow = Boolean.parseBoolean(request.getParameter(BUY_IT_NOW_PARAM));
+        String step = request.getParameter(STEP_PARAM);
 
         ProductDAO productDAO = new ProductOracleDAOImpl();
         UserDAO userDAO = new UserOracleDAOImpl();
@@ -98,7 +113,7 @@ public class AddingServlet  extends HttpServlet {
         JSONObject obj = new JSONObject();
 
         try {
-            String login = request.getSession().getAttribute("login").toString();
+            String login = request.getSession().getAttribute(LOGIN_ATTR).toString();
 
             User user = userDAO.findByLogin(login);
             Product product = new Product(title,description,Double.parseDouble(startPrice),Double.parseDouble(step));
@@ -107,16 +122,15 @@ public class AddingServlet  extends HttpServlet {
             product.setTime(timeLeft);
             product.setuID(productId);
             productDAO.update(product);
-            obj.put("resp", "success");
+            obj.put(RESP_ATTR, SUCCES);
         } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-            obj.put("resp", "SQL error");
+            log.log(Level.SEVERE, SQL_ERR, e);
+            obj.put(RESP_ATTR, SQL_ERR);
         } catch (UserAuthenticationException | NullPointerException e) {
-            log.log(Level.SEVERE, "User not exist", e);
-            obj.put("resp", "Authentication error");
+            log.log(Level.SEVERE, AUTH_ERR, e);
+            obj.put(RESP_ATTR, AUTH_ERR);
         }finally {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json; charset=UTF-8");
+
             PrintWriter writer = response.getWriter();
 
             writer.print(obj);

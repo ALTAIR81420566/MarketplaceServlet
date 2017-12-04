@@ -21,6 +21,16 @@ import java.util.logging.Logger;
 
 public class GeneralPageServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(GeneralPageServlet.class.getName());
+    private final String FINDBY = "findBy";
+    private final String TITLE_PARAM = "Title";
+    private final String DESCRIPTION_PARAM = "Description";
+    private final String UID_PARAM = "uId";
+    private final String SEARCH_TEXT_PARAM = "searchText";
+    private final String LOGIN = "login";
+    private final String COUNT = "count";
+    private final String BUY = "buy";
+    private final String PRODUCT_ID_PARAM = "productId";
+    private final String GENERAL_PATH = "/General.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,19 +38,16 @@ public class GeneralPageServlet extends HttpServlet {
         ProductDAO productDAO = new ProductOracleDAOImpl();
         ArrayList<Product> products = new ArrayList<>();
         try {
-            if (request.getParameter("findBy") == null) {
+            if (request.getParameter(FINDBY) == null) {
                 products = productDAO.getAll();
             } else {
                 String reqSstr = null;
-
-                if(request.getParameter("findBy").equals("Title")){
-                    reqSstr = request.getParameter("searchText").toString();
+                reqSstr = request.getParameter(SEARCH_TEXT_PARAM).toString();
+                if(request.getParameter(FINDBY).equals(TITLE_PARAM)){
                     products = productDAO.findByTitle(reqSstr);
-                }else if (request.getParameter("findBy").equals("uId")) {
-                    reqSstr = request.getParameter("searchText").toString();
+                }else if (request.getParameter(FINDBY).equals(UID_PARAM)) {
                     products.add(productDAO.findByUID(Long.parseLong(reqSstr)));
-                } else if (request.getParameter("findBy").equals("Description")) {
-                    reqSstr = request.getParameter("searchText").toString();
+                } else if (request.getParameter(FINDBY).equals(DESCRIPTION_PARAM)) {
                     products = productDAO.findByDescription(reqSstr);
                 }
             }
@@ -55,23 +62,23 @@ public class GeneralPageServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        request.getRequestDispatcher("/General.jsp").forward(request, response);
+        request.getRequestDispatcher(GENERAL_PATH).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-            String login = request.getSession().getAttribute("login").toString();
-            Long productId = Long.parseLong(request.getParameter("productId"));
+            String login = request.getSession().getAttribute(LOGIN).toString();
+            Long productId = Long.parseLong(request.getParameter(PRODUCT_ID_PARAM));
 
             UserDAO userDAO = new UserOracleDAOImpl();
             ProductDAO productDAO = new ProductOracleDAOImpl();
         try {
-            if (request.getParameter("buy").equals("true")) {
+            if (request.getParameter(BUY).equals("true")) {
                 Product product = productDAO.findByUID(productId);
                 productDAO.sellProduct(product);
             }else{
-                    Integer count = Integer.parseInt(request.getParameter("count"));
+                    Integer count = Integer.parseInt(request.getParameter(COUNT));
                     User user = userDAO.findByLogin(login);
                     BidDAO bidDAO = new BidOracleDAOImpl();
                     Product product = productDAO.findByUID(productId);
@@ -93,59 +100,5 @@ public class GeneralPageServlet extends HttpServlet {
 
             doGet(request, response);
         }
-
-    private void findByTitle(HttpServletRequest request, String title){
-        ProductDAO productDAO = new ProductOracleDAOImpl();
-        try {
-            ArrayList<Product> products = productDAO.findByTitle(title);
-            Map<Product, Bid> items = new HashMap<>();
-            BidDAO bidDAO = new BidOracleDAOImpl();
-            for(Product prod : products){
-                Bid bestBid = bidDAO.getLast(prod.getuID());
-                items.put(prod, bestBid);
-            }
-
-            request.setAttribute("products", items);
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-        }
-    }
-    private void findById(HttpServletRequest request){
-        ProductDAO productDAO = new ProductOracleDAOImpl();
-        try {
-            ArrayList<Product> products = productDAO.getAll();
-            Map<Product, Bid> items = new HashMap<>();
-            BidDAO bidDAO = new BidOracleDAOImpl();
-            for(Product prod : products){
-                Bid bestBid = bidDAO.getLast(prod.getuID());
-                items.put(prod, bestBid);
-            }
-
-            request.setAttribute("products", items);
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-        }
-    }
-    private void findByDescription(HttpServletRequest request){
-
-    }
-    private void findAll(HttpServletRequest request){
-        ProductDAO productDAO = new ProductOracleDAOImpl();
-        try {
-            ArrayList<Product> products = productDAO.getAll();
-            Map<Product, Bid> items = new HashMap<>();
-            BidDAO bidDAO = new BidOracleDAOImpl();
-            for(Product prod : products){
-                Bid bestBid = bidDAO.getLast(prod.getuID());
-                items.put(prod, bestBid);
-            }
-
-            request.setAttribute("products", items);
-        } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
-        }
-    }
-
-
 
 }

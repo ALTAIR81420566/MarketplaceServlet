@@ -17,6 +17,11 @@ import java.util.logging.Logger;
 
 public class RegistrationServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(RegistrationServlet.class.getName());
+    private final String SQL_ERR = "SQL error";
+    private final String PASSWORD = "password";
+    private final String ADDRESS = "address";
+    private final String FULL_NAME = "fullName";
+    private final String REG_PATH = "/Registration.jsp";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,17 +31,17 @@ public class RegistrationServlet extends HttpServlet {
         try {
             User user =  userDAO.findByLogin(login);
         } catch (SQLException e) {
-            log.log(Level.SEVERE, "SQL exception", e);
+            log.log(Level.SEVERE, SQL_ERR, e);
         } catch (UserAuthenticationException e) {
             log.log(Level.SEVERE, "User not exist");
-            String pass = request.getParameter("password");
-            String address = request.getParameter("address");
-            String fullName = request.getParameter("fullName");
+            String pass = request.getParameter(PASSWORD);
+            String address = request.getParameter(ADDRESS);
+            String fullName = request.getParameter(FULL_NAME);
             respUser = new User(login,pass,address,fullName);
             try {
                 userDAO.add(respUser);
             } catch (SQLException e1) {
-                log.log(Level.SEVERE, "SQL exception", e);
+                log.log(Level.SEVERE, SQL_ERR, e);
             } catch (UserAuthenticationException e1) {
                 log.log(Level.SEVERE, "Login already exist", e);
             }
@@ -49,6 +54,6 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/Registration.jsp").forward(request, response);
+        request.getRequestDispatcher(REG_PATH).forward(request, response);
     }
 }

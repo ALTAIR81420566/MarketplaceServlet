@@ -18,30 +18,40 @@ import java.util.logging.Logger;
 
 public class AuthorizationServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(AuthorizationServlet.class.getName());
+    private final String LOGIN = "login";
+    private final String PASSWORD = "password";
+    private final String ROLE = "role";
+    private final String USER = "user";
+    private final String RESP_ATTR = "resp";
+    private final String SUCCES = "success";
+    private final String GUEST = "guest";
+    private final String SQL_ERR = "SQL error";
+    private final String AUTHORIZATION_PATH = "Authorization.jsp";
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-          String login = request.getParameter("login");
-            String pass = request.getParameter("password");
+            String login = request.getParameter(LOGIN);
+            String pass = request.getParameter(PASSWORD);
             UserDAO userDAO = new UserOracleDAOImpl();
             JSONObject obj = new JSONObject();
             PrintWriter writer = response.getWriter();
             try {
                 User user = userDAO.findByLogin(login);
                 if (user.getPassword().equals(pass)) {
-                    request.getSession().setAttribute("login", login);
-                    request.getSession().setAttribute("role", "user");
-                    obj.put("resp", "success");
+                    request.getSession().setAttribute(LOGIN, login);
+                    request.getSession().setAttribute(ROLE, USER);
+                    obj.put(RESP_ATTR, SUCCES);
                 }else{
-                    obj.put("resp", "Invalid password");
+                    obj.put(RESP_ATTR, "Invalid password");
                 }
             } catch (SQLException e) {
-                log.log(Level.SEVERE, "SQL exception", e);
-                obj.put("resp", "SQL exception");
+                log.log(Level.SEVERE, SQL_ERR, e);
+                obj.put(RESP_ATTR, SQL_ERR);
             } catch (UserAuthenticationException e) {
                 log.log(Level.SEVERE, "User not exist", e);
-                obj.put("resp", "User with this login not exist");
+                obj.put(RESP_ATTR, "User with this login not exist");
             }finally {
                 writer.print(obj);
                 writer.close();
@@ -50,9 +60,9 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("Authorization.jsp").forward(request, response);
-        request.getSession().setAttribute("login", "guest");
-        request.getSession().setAttribute("role", "guest");
+        request.getRequestDispatcher(AUTHORIZATION_PATH).forward(request, response);
+        request.getSession().setAttribute(LOGIN, GUEST);
+        request.getSession().setAttribute(ROLE, GUEST);
 
     }
 }

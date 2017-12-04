@@ -140,7 +140,7 @@
                             </c:if>
                             <c:if test="${!item.key.sold}">
                             <jsp:useBean id="now" class="java.util.Date"/>
-                            <c:if test="${dateValue.getTime() > now.getTime()}">
+
                                     <c:if test="${!role.equals('guest')}">
                                           <c:if test="${item.key.buyNow}">
                                           <form  method="post" action="/general">
@@ -150,19 +150,22 @@
                                           </c:if>
 
                                           <c:if test="${!item.key.buyNow}">
-                                              <form  method="post" action="/general">
-                                                    <td>
-                                                    <input type="hidden" name="buy" value="false">
-                                                      <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
-                                                      <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
-                                                    </td>
-                                              </form>
+                                              <c:if test="${dateValue.getTime() > now.getTime()}">
+                                                  <form  method="post" action="/general">
+                                                        <td>
+                                                        <input type="hidden" name="buy" value="false">
+                                                          <input maxlength="10" size="5" type="number" name="count" value="${fn:escapeXml(products.count)}">
+                                                          <button id="bidBtn" type ="submit" name="productId" value="${item.key.uID}">Bid</button>
+                                                        </td>
+                                                  </form>
+                                              </c:if>
+                                              <c:if test="${dateValue.getTime() < now.getTime()}">
+                                                  <td>Time is over</td>
+                                              </c:if>
                                            </c:if>
                                     </c:if>
-                            </c:if>
-                            <c:if test="${dateValue.getTime() < now.getTime()}">
-                                <td>Time is over</td>
-                            </c:if>
+
+
                             </c:if>
 
                         </tr>
