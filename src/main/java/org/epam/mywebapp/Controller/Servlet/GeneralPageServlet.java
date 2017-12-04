@@ -24,12 +24,35 @@ public class GeneralPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            if (request.getParameter("findBy") == null) {
+                products = productDAO.getAll();
+            } else {
+                String reqSstr = null;
 
-        if(request.getParameter("findBy") == null){
-            findAll(request);
-        }else if(request.getParameter("findBy").equals("title")){
-            String title =  request.getParameter("searchText").toString();
-            findByTitle(request, title);
+                if(request.getParameter("findBy").equals("Title")){
+                    reqSstr = request.getParameter("searchText").toString();
+                    products = productDAO.findByTitle(reqSstr);
+                }else if (request.getParameter("findBy").equals("uId")) {
+                    reqSstr = request.getParameter("searchText").toString();
+                    products.add(productDAO.findByUID(Long.parseLong(reqSstr)));
+                } else if (request.getParameter("findBy").equals("Description")) {
+                    reqSstr = request.getParameter("searchText").toString();
+                    products = productDAO.findByDescription(reqSstr);
+                }
+            }
+            Map<Product, Bid> items = new HashMap<>();
+            BidDAO bidDAO = new BidOracleDAOImpl();
+            for(Product prod : products){
+                Bid bestBid = bidDAO.getLast(prod.getuID());
+                items.put(prod, bestBid);
+            }
+            request.setAttribute("products", items);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         request.getRequestDispatcher("/General.jsp").forward(request, response);
@@ -88,7 +111,20 @@ public class GeneralPageServlet extends HttpServlet {
         }
     }
     private void findById(HttpServletRequest request){
+        ProductDAO productDAO = new ProductOracleDAOImpl();
+        try {
+            ArrayList<Product> products = productDAO.getAll();
+            Map<Product, Bid> items = new HashMap<>();
+            BidDAO bidDAO = new BidOracleDAOImpl();
+            for(Product prod : products){
+                Bid bestBid = bidDAO.getLast(prod.getuID());
+                items.put(prod, bestBid);
+            }
 
+            request.setAttribute("products", items);
+        } catch (SQLException e) {
+            log.log(Level.SEVERE, "SQL exception", e);
+        }
     }
     private void findByDescription(HttpServletRequest request){
 

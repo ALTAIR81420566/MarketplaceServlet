@@ -96,7 +96,7 @@ public class ProductOracleDAOImpl implements ProductDAO {
     }
 
     @Override
-    public Product findByUID(long uID){
+    public Product findByUID(Long uID){
         Connection conn = MyConnection.getConnection();
         PreparedStatement statement = null;
         Product product = null;
@@ -181,7 +181,7 @@ public class ProductOracleDAOImpl implements ProductDAO {
         ArrayList<Product> products = new ArrayList<>();
         try {
             statement = conn.prepareStatement(SELECT_BY_DESCRIPTION);
-            statement.setString(1, description);
+            statement.setString(1, "%"+description+"%");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 products.add(createProduct(resultSet));

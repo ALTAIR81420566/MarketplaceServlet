@@ -57,5 +57,7 @@ textarea{
 .registerBtn{
      margin-top: 10%;
 }
-
+#backBtn{
+    margin-bottom:5px;
+}
 

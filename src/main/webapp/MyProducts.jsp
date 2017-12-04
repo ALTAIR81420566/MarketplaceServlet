@@ -29,12 +29,15 @@
 <body>
 
 <div class = "logInfo">
-    <div class="row">
+    <div class="row col-md-offset-2">
         <div class="col-2 col-md-2 ">
             <p>You are logged in as: </p>
         </div>
         <div class="col-2 col-md-1 ">
-            <p id="userLogin"></p>
+            <p id="userLogin">${login}</p>
+        </div>
+        <div class="col-2 col-md-1 ">
+            <a id="LogOut"  onclick="window.location.href='/authorization';">LogOut</a>
         </div>
     </div>
 </div>
@@ -42,24 +45,11 @@
 <div class="container">
 
     <h1>Online marketplace</h1>
-    <p>Search parameters</p>
-    <p>Keyword: </p>
+
 
     <div class="row justify-content-md-center">
 
-        <div class="col-2 col-md-3 ">
-            <p><input maxlength="25" size="35"></p>
-        </div>
-        <div class="col-6 col-md-1">
-            <select>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
-                <option>Example</option>
-            </select>
-        </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-2 col-md-offset-10">
                 <button id = "backBtn">Back on general page</button>
         </div>
     </div>

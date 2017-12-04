@@ -10,7 +10,7 @@ public interface ProductDAO {
 
  ArrayList<Product> getAll() throws SQLException;
  ArrayList<Product> findByTitle(String name) throws SQLException;
- Product findByUID(long uID) throws SQLException;
+ Product findByUID(Long uID) throws SQLException;
  ArrayList<Product> findBySeller(String sellerName) throws SQLException;
 
  ArrayList<Product> findBySellerLogin(String sellerName);

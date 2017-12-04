@@ -25,6 +25,7 @@ public class AddingServlet  extends HttpServlet {
     private Actions currentAction;
     private Long productId;
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(currentAction.equals(Actions.EDIT)){
